@@ -1,7 +1,7 @@
 import string
 import re
 import warnings
-warnings.simplefilter("ignore")
+warnings.filterwarnings("ignore")
 
 import pandas as pd
 import numpy as np
@@ -9,7 +9,6 @@ import numpy as np
 from nltk.corpus import twitter_samples
 from nltk.tokenize import TweetTokenizer
 from nltk.stem import SnowballStemmer
-from nltk.tokenize import TweetTokenizer
 from nltk.corpus import stopwords
 
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -53,6 +52,16 @@ def cleanTweets(tweet):
     tweet = re.sub('[\s]+', ' ', tweet)
     #convert "#topic" to just "topic"
     tweet = re.sub(r'#([^\s]+)', ' ', tweet)
+
+    tweet = tweet.split()
+
+    stem = SnowballStemmer(language = "english")
+    for i in tweet:
+        stem.stem(i)
+
+    tweet = " ".join(tweet)
+
+    print(tweet)
     return tweet
 
 def useVectorizer(data, max):
@@ -65,7 +74,7 @@ def useVectorizer(data, max):
     print()
     return features.toarray()
 
-def train_classifier(x_train, y_train, multiple = False, x_test, y_test):
+def train_classifier(x_train, y_train, multiple = True):
     if (multiple == True):
         models = [GaussianNB(), MultinomialNB(), SVC(), BernoulliNB()]
         for model in models:
@@ -75,15 +84,15 @@ def train_classifier(x_train, y_train, multiple = False, x_test, y_test):
         return models
     else:
         # Insert optimum model here with optimum parameters
-        model = BernoulliNB()
+        model = MultinomialNB()
         params = {
-        'alpha':(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0),
-        'fit_prior':(True, False)
+        'alpha':(0.7, 0.72, 0.74, 0.76, 0.78, 0.8, 0.82, 0.84, 0.86, 0.88, 0.9)
         }
         clf = GridSearchCV(model, params, cv = 5, n_jobs=-1)
         clf.fit(x_train, y_train)
 
-        return clf.best_estimator
+        print(clf.best_estimator_)
+        return clf.best_estimator_
 
 def testClassifier(cls, x, y):
     if isinstance(cls, (list,)):
@@ -112,7 +121,7 @@ def full():
     label = np.array(tweet_dataset.sentiment)
     features = useVectorizer(data, 1500)
     x_train, x_test, y_train, y_test = train_test_split(features, label, test_size=0.25, random_state=0)
-    all_models = train_classifier(x_train, y_train, multiple = False, x_test, y_test)
+    all_models = train_classifier(x_train, y_train, multiple = False)
     testClassifier(all_models, x_test, y_test)
 
 if __name__ == "__main__":
