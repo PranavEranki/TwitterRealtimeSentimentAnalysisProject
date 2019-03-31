@@ -1,5 +1,7 @@
 import string
 import re
+import warnings
+warnings.simplefilter("ignore")
 
 import pandas as pd
 import numpy as np
@@ -13,14 +15,20 @@ from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.cross_validation import train_test_split
 from sklearn.preprocessing import LabelEncoder
-from sklearn.metrics import confusion_matrix
-from sklearn.metrics import roc_auc_score
-from sklearn.metrics import f1_score
+
 from sklearn.naive_bayes import GaussianNB
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.naive_bayes import BernoulliNB
 from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import GridSearchCV
+
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import roc_auc_score
+from sklearn.metrics import f1_score
+from sklearn.metrics import classification_report
+from sklearn.metrics import accuracy_score
+
 
 def import_tweets(filename, frac, header = None):
 	#import data from csv file via pandas library.
@@ -52,41 +60,50 @@ def useVectorizer(data, max):
                             analyzer='word', token_pattern=r'\w{3,}', ngram_range=(1,1),
                             use_idf=True,smooth_idf=True, sublinear_tf=True, stop_words = "english") # we need to give proper stopwords list for better performance
     features=tfv.fit_transform(data)
-    # print ("dataset transformed")
-    # print ("dataset shape ", features.shape)
+    print ("dataset transformed")
+    print ("dataset shape ", features.shape)
+    print()
     return features.toarray()
 
-def train_classifier(x_train, y_train, multiple = False):
+def train_classifier(x_train, y_train, multiple = False, x_test, y_test):
     if (multiple == True):
         models = [GaussianNB(), MultinomialNB(), SVC(), BernoulliNB()]
         for model in models:
             print("Training : " + str(type(model)))
             model.fit(x_train, y_train)
+        print()
         return models
     else:
         # Insert optimum model here with optimum parameters
-        model = GaussianNB()
-        # do grid search cv for the best parameters
+        model = BernoulliNB()
+        params = {
+        'alpha':(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0),
+        'fit_prior':(True, False)
+        }
+        clf = GridSearchCV(model, params, cv = 5, n_jobs=-1)
+        clf.fit(x_train, y_train)
 
-        return model
+        return clf.best_estimator
 
 def testClassifier(cls, x, y):
     if isinstance(cls, (list,)):
         for model in cls:
             print("For model : " + str(type(model)))
             pred = model.predict(x)
-            f1 = f1_score(y, pred)
-            cm = confusion_matrix(y, pred)
-            print("F1 score : " + str(f1))
-            print("Confusion matrix : " + str(cm))
-            print()
+            printReports(y, pred)
+
     else:
         pred = cls.predict(x)
-        f1 = f1_score(y, pred)
-        cm = confusion_matrix(y, pred)
-        print("F1 score : " + str(f1))
-        print("Confusion matrix : " + str(cm))
+        printReports(y, pred)
 
+def printReports(y, pred):
+    rep = classification_report(y, pred)
+    cm = confusion_matrix(y, pred)
+    accuracy = accuracy_score(y, pred)
+    print("F1 score : " + str(rep))
+    print("Confusion matrix : " + str(cm))
+    print("Accuracy score : " + str(accuracy))
+    print()
 
 def full():
     tweet_dataset = import_tweets("data/data.csv", 0.006)
@@ -95,7 +112,7 @@ def full():
     label = np.array(tweet_dataset.sentiment)
     features = useVectorizer(data, 1500)
     x_train, x_test, y_train, y_test = train_test_split(features, label, test_size=0.25, random_state=0)
-    all_models = train_classifier(x_train, y_train, multiple = True)
+    all_models = train_classifier(x_train, y_train, multiple = False, x_test, y_test)
     testClassifier(all_models, x_test, y_test)
 
 if __name__ == "__main__":

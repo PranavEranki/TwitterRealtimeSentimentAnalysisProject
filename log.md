@@ -22,3 +22,5 @@
 - Organized code into reusable functions
 - Finalized code for single model
 - Added functionality to test various models to determine optimum model
+- Optimum model is BernoulliNB, but MultinomialNB will be used instead
+- Ran gridsearchCV on MultinomialNB
