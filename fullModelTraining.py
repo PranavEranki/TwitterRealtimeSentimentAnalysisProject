@@ -28,6 +28,7 @@ from sklearn.metrics import f1_score
 from sklearn.metrics import classification_report
 from sklearn.metrics import accuracy_score
 
+stop_words = set(stopwords.words("english"))
 
 def import_tweets(filename, frac, header = None):
 	#import data from csv file via pandas library.
@@ -53,15 +54,21 @@ def cleanTweets(tweet):
     #convert "#topic" to just "topic"
     tweet = re.sub(r'#([^\s]+)', ' ', tweet)
 
-    tweet = tweet.split()
+    tweet = re.sub(r'[^\w\s]','',tweet)
+
+    x = tweet.split()
+    n = []
+
+    for w in x:
+        if w not in stop_words:
+            n.append(w)
 
     stem = SnowballStemmer(language = "english")
-    for i in tweet:
+    for i in n:
         stem.stem(i)
 
-    tweet = " ".join(tweet)
+    tweet = " ".join(n)
 
-    print(tweet)
     return tweet
 
 def useVectorizer(data, max):
@@ -84,15 +91,19 @@ def train_classifier(x_train, y_train, multiple = True):
         return models
     else:
         # Insert optimum model here with optimum parameters
-        model = MultinomialNB()
-        params = {
-        'alpha':(0.7, 0.72, 0.74, 0.76, 0.78, 0.8, 0.82, 0.84, 0.86, 0.88, 0.9)
-        }
-        clf = GridSearchCV(model, params, cv = 5, n_jobs=-1)
-        clf.fit(x_train, y_train)
+        # model = BernoulliNB(fit_prior = False)
+        # params = {
+        # 'alpha':(0.7, 0.72, 0.74, 0.76, 0.78, 0.8, 0.82, 0.84, 0.86, 0.88, 0.9),
+        # 'binarize':(0.0, 0.05, 0.1, 0.15, 0.2)
+        # }
+        # clf = GridSearchCV(model, params, cv = 5, n_jobs=-1)
+        # clf.fit(x_train, y_train)
+        #
+        # print(clf.best_estimator_)
+        # return clf.best_estimator_
 
-        print(clf.best_estimator_)
-        return clf.best_estimator_
+        model = BernoulliNB('alpha' = 0.8, 'binarize' = 0.15, fit_prior = False)
+        return model
 
 def testClassifier(cls, x, y):
     if isinstance(cls, (list,)):
