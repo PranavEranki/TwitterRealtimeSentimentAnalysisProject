@@ -36,7 +36,7 @@ def getTopic():
     tweets = np.asarray(getCleanedResults(topic))
     results = np.asarray(doPredictions(tweets))
 
-    df = pd.DataFrame({"tweets":tweets, "predictions":results})
+    df = pd.DataFrame({"Tweet":tweets, "Sentiment":results})
 
     for i in range(10):
         print("Tweet : " + tweets[i] + ", pred : " + str(results[i]))
