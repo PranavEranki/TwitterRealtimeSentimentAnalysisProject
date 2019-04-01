@@ -4,6 +4,8 @@
 
 __The data is from [here](https://www.kaggle.com/kazanova/sentiment140)__. Download it and save it as `data.csv` inside the data folder.
 
+This project assumes you have *Python* pre-installed and *pip* setup.
+
 First, install the requirements by doing `pip install -r requirements.txt` in your console (preferably in a virtual environment)
 
 For this project, you will need
