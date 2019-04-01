@@ -19,7 +19,7 @@ For this project, you will need
 
 Also, to use tweepy, you need to register for a Twitter developer account. The process for this usually takes a while, but they guide you through the process well.
 
-Once this is done, replace the placeholders in lines *13-16* in `analyze.py` with your account-specific codes which can be accessed once you create a new app. For a helpful tutorial, refer to [this](http://socialmedia-class.org/twittertutorial.html).
+Once this is done, replace the placeholders in lines *13-16* in `analyze.py` with your account-specific codes which can be accessed once you create a new app. For a helpful tutorial, refer to [this](https://www.alexkras.com/how-to-get-user-feed-with-twitter-api-and-python/).
 
 Once your environment is setup and your codes inputted, you have two options:
 1. You can edit `fullModelTraining.py` with your own model, hyperparameters, and/or section of the data (I used 100k tweets, but you might want more or less)
