@@ -19,14 +19,14 @@
 # 3/31/19
 - Removed some of the preprocessing that was causing errors
 - Added some different preprocessing
-- Organized code into reusable functions
+- Organized code into reusable functions, added folder structure
 - Finalized code for single model
   - Added functionality to test various models to determine optimum model
   - Optimum model is BernoulliNB, but MultinomialNB is also viable
   - Ran gridsearchCV on MultinomialNB and Bernoulli using random subsets of the data
-  - The average accuracy is about 72.5%, which is not good but its the best I was able to achieve with sklearn. NNs would be better but also more computationally intensive.
+  - The average accuracy is about 74%, which is not good but its the best I was able to achieve with sklearn. NNs would be better but also more computationally intensive.
 - Trained the single model on 6% of the data, about 100k tweets.
-- Wrote code for saving the model and TfidfVectorizer
+- Wrote code for saving the model and TfidfVectorizer for use by Flask app
 - Integrated tweet API
   - Getting last 10 tweets
   - Running vectorizer and cleaning the tweets

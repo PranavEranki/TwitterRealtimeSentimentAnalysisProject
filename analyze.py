@@ -1,21 +1,27 @@
 from flask import *
 import tweepy
+import pandas as pd
+import numpy as np
+
 import json
+
+from sklearn.externals import joblib
+import pickle
 
 from fullModelTraining import cleanTweets
 
-ACCESS_TOKEN = '1112133104204836864-JK8hpTMvxOLePQvIhYuxV3oSf4rBh6'
-ACCESS_SECRET = 'Pyps7jrDdOapJYVEVHcAk4J7qJwnTapDStlotgCEyaPg1'
-CONSUMER_KEY = 'XVkipNLEu8WwcdNoBdGiD9wdE'
-CONSUMER_SECRET = 'qOxlkDWfDAV8ZCaPzDyCn4Khgcn4kI1qaVf5yKXTYlUK0MQyda'
+ACCESS_TOKEN = 'Enter_Here'
+ACCESS_SECRET = 'Enter_Here'
+CONSUMER_KEY = 'Enter_Here'
+CONSUMER_SECRET = 'Enter_Here'
 
 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(ACCESS_TOKEN, ACCESS_SECRET)
 # Create the api to connect to twitter with your creadentials
 api = tweepy.API(auth)
 
-model = joblib.load("finalmodel.pkl")
-tf = pickle.load(open("tfidf.pickle", "rb"))
+model = joblib.load("outputs/finalmodel.pkl")
+tf = pickle.load(open("outputs/tfidf.pickle", "rb"))
 
 app = Flask(__name__)
 
@@ -23,18 +29,19 @@ app = Flask(__name__)
 def mainPage():
     return render_template('mainPage.html')
 
-@app.route('/analyze', methods = ['POST'])
+@app.route('/tables', methods = ['POST'])
 def getTopic():
     topic = request.form['topic']
-    # print("Your selected topic is '" + topic + "'")
-    # Getting twitter results for that topic
-    tweets = getCleanedResults(topic)
-    doPredictions(tweets)
 
-    for (i in range(10)):
-        print("Tweet : " + getCleanedResults[i] + ", pred : " + str(doPredictions[i]))
+    tweets = np.asarray(getCleanedResults(topic))
+    results = np.asarray(doPredictions(tweets))
 
-    return redirect('/')
+    df = pd.DataFrame({"tweets":tweets, "predictions":results})
+
+    for i in range(10):
+        print("Tweet : " + tweets[i] + ", pred : " + str(results[i]))
+
+    return render_template('view.html',tables=[df.to_html(classes='data')])
 
 def getCleanedResults(topic):
     results = api.search(q = topic, lang = "en")
@@ -45,14 +52,17 @@ def getCleanedResults(topic):
     return tweets
 
 def doPredictions(tweets):
-    for tweet in tweets:
-        tweet = tf.transform(tweet)
+    tweets = tf.transform(tweets)
+    pred2 = model.predict(tweets)
 
-    results = []
-    for tweet in tweets:
-        results.append(model.predict(tweet))
+    pred = []
+    for p in pred2:
+        if (p == 0):
+            pred.append("Negative")
+        elif (p == 1):
+            pred.append("Positive")
 
-    return results
+    return pred
 
 if __name__ == "__main__":
     app.run()
