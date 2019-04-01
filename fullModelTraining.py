@@ -28,19 +28,21 @@ from sklearn.metrics import f1_score
 from sklearn.metrics import classification_report
 from sklearn.metrics import accuracy_score
 
+from sklearn.externals import joblib
+
 stop_words = set(stopwords.words("english"))
 
 def import_tweets(filename, frac, header = None):
-	#import data from csv file via pandas library.
+    #import data from csv file via pandas library.
     # Only take a certain fraction of the data. We do not need 1.6 million tweets
-	tweet_dataset = pd.read_csv(filename, encoding = "ISO-8859-1").sample(frac = frac)
-	#the column names are based on sentiment140 dataset provided on kaggle
-	tweet_dataset.columns = ['sentiment','id','date','flag','user','text']
-	#delete 3 columns: flags,id,user, as they are not required for analysis
-	for i in ['flag','id','user','date']: del tweet_dataset[i] # or tweet_dataset = tweet_dataset.drop(["id","user","date","user"], axis = 1)
-	#in sentiment140 dataset, positive = 4, negative = 0; So we change positive to 1
-	tweet_dataset.sentiment = tweet_dataset.sentiment.replace(4,1)
-	return tweet_dataset
+    tweet_dataset = pd.read_csv(filename, encoding = "ISO-8859-1").sample(frac = frac)
+    #the column names are based on sentiment140 dataset provided on kaggle
+    tweet_dataset.columns = ['sentiment','id','date','flag','user','text']
+    #delete 3 columns: flags,id,user, as they are not required for analysis
+    for i in ['flag','id','user','date']: del tweet_dataset[i] # or tweet_dataset = tweet_dataset.drop(["id","user","date","user"], axis = 1)
+    #in sentiment140 dataset, positive = 4, negative = 0; So we change positive to 1
+    tweet_dataset.sentiment = tweet_dataset.sentiment.replace(4,1)
+    return tweet_dataset
 
 # Now, we need to 'clean' the tweet
 def cleanTweets(tweet):
@@ -76,6 +78,7 @@ def useVectorizer(data, max):
                             analyzer='word', token_pattern=r'\w{3,}', ngram_range=(1,1),
                             use_idf=True,smooth_idf=True, sublinear_tf=True, stop_words = "english") # we need to give proper stopwords list for better performance
     features=tfv.fit_transform(data)
+	pickle.dump(tfv, open("tfidf.pickle", "wb"))
     print ("dataset transformed")
     print ("dataset shape ", features.shape)
     print()
@@ -101,8 +104,8 @@ def train_classifier(x_train, y_train, multiple = True):
         #
         # print(clf.best_estimator_)
         # return clf.best_estimator_
-
-        model = BernoulliNB('alpha' = 0.8, 'binarize' = 0.15, fit_prior = False)
+        model = BernoulliNB(alpha=0.8, binarize=0.15, fit_prior=False)
+        model.fit(x_train, y_train)
         return model
 
 def testClassifier(cls, x, y):
@@ -125,8 +128,11 @@ def printReports(y, pred):
     print("Accuracy score : " + str(accuracy))
     print()
 
+def saveModel(model, name):
+    joblib.dump(model, name + ".pkl")
+
 def full():
-    tweet_dataset = import_tweets("data/data.csv", 0.006)
+    tweet_dataset = import_tweets("data/data.csv", 0.6)
     tweet_dataset['text'] = tweet_dataset['text'].apply(cleanTweets)
     data = np.array(tweet_dataset.text)
     label = np.array(tweet_dataset.sentiment)
@@ -134,6 +140,7 @@ def full():
     x_train, x_test, y_train, y_test = train_test_split(features, label, test_size=0.25, random_state=0)
     all_models = train_classifier(x_train, y_train, multiple = False)
     testClassifier(all_models, x_test, y_test)
+    saveModel(all_models, "finalmodel")
 
 if __name__ == "__main__":
     full()

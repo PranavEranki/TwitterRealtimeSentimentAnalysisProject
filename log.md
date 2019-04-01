@@ -17,10 +17,12 @@
   - Fixed some bugs in program
 
 # 3/31/19
-- Changed architecture
 - Removed some of the preprocessing that was causing errors
+- Added some different preprocessing
 - Organized code into reusable functions
 - Finalized code for single model
-- Added functionality to test various models to determine optimum model
-- Optimum model is BernoulliNB, but MultinomialNB will be used instead
-- Ran gridsearchCV on MultinomialNB
+  - Added functionality to test various models to determine optimum model
+  - Optimum model is BernoulliNB, but MultinomialNB is also viable
+  - Ran gridsearchCV on MultinomialNB and Bernoulli using random subsets of the data
+  - The average accuracy is about 72.5%, which is not good but its the best I was able to achieve with sklearn. NNs would be better but also more computationally intensive.
+- Trained the single model on 45% of the data, about 720k tweets.
