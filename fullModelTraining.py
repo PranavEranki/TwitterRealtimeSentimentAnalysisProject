@@ -75,12 +75,12 @@ def cleanTweets(tweet):
 
     return tweet
 
-def useVectorizer(data, max):
+def useVectorizer(data, name, max):
     tfv=TfidfVectorizer(min_df=0, max_features= max, strip_accents='unicode',lowercase =True,
                             analyzer='word', token_pattern=r'\w{3,}', ngram_range=(1,1),
                             use_idf=True,smooth_idf=True, sublinear_tf=True, stop_words = "english") # we need to give proper stopwords list for better performance
     features=tfv.fit_transform(data)
-    pickle.dump(tfv, open("tfidf.pickle", "wb"))
+    pickle.dump(tfv, open(name, "wb"))
     print ("dataset transformed")
     print ("dataset shape ", features.shape)
     print()
@@ -138,11 +138,11 @@ def full():
     tweet_dataset['text'] = tweet_dataset['text'].apply(cleanTweets)
     data = np.array(tweet_dataset.text)
     label = np.array(tweet_dataset.sentiment)
-    features = useVectorizer(data, 1500)
+    features = useVectorizer(data, "outputs/tfidf.pickle", 1500)
     x_train, x_test, y_train, y_test = train_test_split(features, label, test_size=0.25, random_state=0)
     all_models = train_classifier(x_train, y_train, multiple = False)
     testClassifier(all_models, x_test, y_test)
-    saveModel(all_models, "finalmodel")
+    saveModel(all_models, "outputs/finalmodel")
 
 if __name__ == "__main__":
     full()
