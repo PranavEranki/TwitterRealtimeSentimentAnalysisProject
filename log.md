@@ -25,4 +25,9 @@
   - Optimum model is BernoulliNB, but MultinomialNB is also viable
   - Ran gridsearchCV on MultinomialNB and Bernoulli using random subsets of the data
   - The average accuracy is about 72.5%, which is not good but its the best I was able to achieve with sklearn. NNs would be better but also more computationally intensive.
-- Trained the single model on 45% of the data, about 720k tweets.
+- Trained the single model on 6% of the data, about 100k tweets.
+- Wrote code for saving the model and TfidfVectorizer
+- Integrated tweet API
+  - Getting last 10 tweets
+  - Running vectorizer and cleaning the tweets
+  - Predicting using the model, printing out the predictions

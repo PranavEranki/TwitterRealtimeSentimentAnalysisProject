@@ -29,6 +29,10 @@ def getTopic():
     # print("Your selected topic is '" + topic + "'")
     # Getting twitter results for that topic
     tweets = getCleanedResults(topic)
+    doPredictions(tweets)
+
+    for (i in range(10)):
+        print("Tweet : " + getCleanedResults[i] + ", pred : " + str(doPredictions[i]))
 
     return redirect('/')
 
@@ -47,6 +51,8 @@ def doPredictions(tweets):
     results = []
     for tweet in tweets:
         results.append(model.predict(tweet))
+
+    return results
 
 if __name__ == "__main__":
     app.run()

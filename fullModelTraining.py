@@ -29,6 +29,8 @@ from sklearn.metrics import classification_report
 from sklearn.metrics import accuracy_score
 
 from sklearn.externals import joblib
+import pickle
+
 
 stop_words = set(stopwords.words("english"))
 
@@ -78,7 +80,7 @@ def useVectorizer(data, max):
                             analyzer='word', token_pattern=r'\w{3,}', ngram_range=(1,1),
                             use_idf=True,smooth_idf=True, sublinear_tf=True, stop_words = "english") # we need to give proper stopwords list for better performance
     features=tfv.fit_transform(data)
-	pickle.dump(tfv, open("tfidf.pickle", "wb"))
+    pickle.dump(tfv, open("tfidf.pickle", "wb"))
     print ("dataset transformed")
     print ("dataset shape ", features.shape)
     print()
@@ -132,7 +134,7 @@ def saveModel(model, name):
     joblib.dump(model, name + ".pkl")
 
 def full():
-    tweet_dataset = import_tweets("data/data.csv", 0.6)
+    tweet_dataset = import_tweets("data/data.csv", 0.0833333)
     tweet_dataset['text'] = tweet_dataset['text'].apply(cleanTweets)
     data = np.array(tweet_dataset.text)
     label = np.array(tweet_dataset.sentiment)

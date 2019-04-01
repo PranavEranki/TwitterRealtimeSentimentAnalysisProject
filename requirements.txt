@@ -1,5 +1,7 @@
-Flask
+flask
 tweepy
 nltk
 scikit-learn
 pandas
+numpy
+pickle
