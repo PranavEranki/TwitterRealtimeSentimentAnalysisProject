@@ -1,4 +1,8 @@
+[Project Statement](docs/projectStatement.md) : A web page that will analyze a series of tweets filtered by a topic using the twitter api and use python NLTK to analyze if a tweet is positive or negative.
+
 # How to run
+
+__The data is from [here](https://www.kaggle.com/kazanova/sentiment140)__. Download it and save it as `data.csv` inside the data folder.
 
 First, install the requirements by doing `pip install -r requirements.txt` in your console (preferably in a virtual environment)
 
@@ -13,7 +17,7 @@ For this project, you will need
 
 Also, to use tweepy, you need to register for a Twitter developer account. The process for this usually takes a while, but they guide you through the process well.
 
-Once this is done, replace the placeholders in `analyze.py` with your codes.
+Once this is done, replace the placeholders in `analyze.py` with your account-specific codes which can be accessed once you create a new app. For a helpful tutorial, refer to [this](http://socialmedia-class.org/twittertutorial.html).
 
 Once your environment is setup and your codes inputted, you have two options:
 1. You can edit `fullModelTraining.py` with your own model, hyperparameters, and/or section of the data (I used 100k tweets, but you might want more or less)
@@ -23,11 +27,10 @@ For analyze.py, when you enter a topic into the field and hit enter, the twitter
 
 The predictions are displayed to the terminal.
 
-They are also displayed in a table, where they are displayed (cut off), along with their predicted sentiment, positive or negative.
+They are also displayed in a table, where they are shown (cut off), along with their predicted sentiment, positive or negative.
 
-The data is from [here](https://www.kaggle.com/kazanova/sentiment140)
 
-__Go to docs for some more documentation__
+__Go to the [log](docs/log.md) for a day by day log__
 
 File / Folder explanation
 1. Python Files
