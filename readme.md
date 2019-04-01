@@ -35,13 +35,13 @@ They are also displayed in a table, where they are shown (cut off), along with t
 __Go to the [log](docs/log.md) for a day by day log__
 
 Form page:
-![](imgs/simplemain.png)
+![](imgs/simpleMain.PNG)
 
 Table page:
-![](imgs/outputtable.png)
+![](imgs/outputTable.PNG)
 
 Terminal Output:
-![](imgs/terminaloutput.png)
+![](imgs/terminalOutput.PNG)
 
 File / Folder explanation
 1. Python Files
