@@ -31,3 +31,4 @@
   - Getting last 10 tweets
   - Running vectorizer and cleaning the tweets
   - Predicting using the model, printing out the predictions
+- Added full website support. Finished app, polished, put info in readme.

@@ -24,3 +24,31 @@ For analyze.py, when you enter a topic into the field and hit enter, the twitter
 The predictions are displayed to the terminal.
 
 They are also displayed in a table, where they are displayed (cut off), along with their predicted sentiment, positive or negative.
+
+The data is from [here](https://www.kaggle.com/kazanova/sentiment140)
+
+__Go to docs for some more documentation__
+
+File / Folder explanation
+1. Python Files
+    * `analyze.py` is the actual Flask app to run
+    * `fullModelTraining.py` is the python file to:
+        * Read the dataset
+        * Preprocess the data
+        * Vectorizes the data and saves the TfidfVectorizer
+        * Generate the opimum model (default is a BernoulliNB, but can be changed) and save it
+        * Run evaluation to terminal to view accuracy and f1-score
+2. Templates
+    * This contains the templates (html files) used for this program
+        * `mainPage.html` is the main page with the form for user input
+        * `view.html` is the page which displays the last 10 tweets (topic user chooses), along with their predicted sentiment, in a table form.
+3. Static
+    * The `style.css` file contains the styling for the webpage
+4. Outputs
+    * `finalmodel.pkl` contains the final model saved as a pkl file for later use
+    * `tfidf.pickle` contains the final TfidfVectorizer for use in vectorizing real time tweets
+5. Docs
+    * `log.md` contains a day by day log of progress. Does not include bugs and issues, but is helpful for tracking progress
+    * `projectStatement.md` contains a project statement for this particular project
+6. Data
+    * This folder contains the kaggle data of all the tweets. This is used for training purposes, and should be downloaded from the link in the top of the readme and saved as `data.csv` for use in training the model. __Note : Not necessary if not retraining models__.
