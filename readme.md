@@ -35,12 +35,15 @@ They are also displayed in a table, where they are shown (cut off), along with t
 __Go to the [log](docs/log.md) for a day by day log__
 
 Form page:
+
 ![](imgs/simpleMain.PNG)
 
 Table page:
+
 ![](imgs/outputTable.PNG)
 
 Terminal Output:
+
 ![](imgs/terminalOutput.PNG)
 
 File / Folder explanation
